@@ -13,7 +13,7 @@
 		.ralphy {
 			width:250px; 
 			height:187px; 
-			background:url(ralphy.gif) -250px 0px;
+			background:url(ralphy.gif) 250px 0px;
 		}
 }
 
@@ -33,7 +33,7 @@
 		.ralphy {
 			width:250px; 
 			height:187px; 
-			background:url(ralphy.gif) -250px -187px;
+			background:url(ralphy.gif) 250px -187px;
 		}
 }
 
@@ -52,6 +52,6 @@
 		.ralphy {
 			width:250px; 
 			height:187px; 
-			background:url(ralphy.gif) -250px -374px;
+			background:url(ralphy.gif) 250px -374px;
 		}
 }
