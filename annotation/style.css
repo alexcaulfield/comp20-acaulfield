@@ -1,3 +1,16 @@
-h3 {
+h1, h3 {
 	text-align: center;
+	color: #FF00EF;
+	background-color: #0010FF;
+	padding: 10px 10px;
+	font-family: "Monotype Corsiva";
+}
+
+video {
+	display: block;
+	margin: 0 auto;
+}
+
+body {
+	background-color: #6A7E25;
 }
