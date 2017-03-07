@@ -6,11 +6,8 @@
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 	<link rel="stylesheet" href="style.css" />
 	<script type="text/javascript">
-
-	// USERNAME: JyggLRkg
 	var myLat = 0;
 	var myLng = 0;
-	var request = new XMLHttpRequest();
 	var myLocation = new google.maps.LatLng(myLat, myLng);
 
 	var info = {
@@ -23,15 +20,25 @@
 	var marker;
 	var infowindow = new google.maps.InfoWindow();
 
+	//var params = "username={username}&lat=YOUR_LATITUDE&lng=YOUR_LONGITUDE";
+
+	var username = 'JyggLRkg';
+	var xhr = new XMLHttpRequest();
+	var data = "";
+	//console.log(data);
+
+	var cars;
+
 	function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), info);
 		getLocation();
+		hello();
 	}
 
 	function getLocation() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-				//console.log(position);
+			//	console.log(position);
 				myLat = position.coords.latitude;
 				myLng = position.coords.longitude;
 				displayMap();
@@ -57,24 +64,24 @@
 		});
 	}
 
-	
-/*	function hello() {
-		var data = {
-			username: "JyggLRkg", 
-			lat:"42.4", 
-			lng: "-71.1"
-		};
 
-		request.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true);
+	data = "username=" + username + "&lat=" + myLat + "&lng=" + myLng;
 
-		request.onreadystatechange = function () {
-			if (request.readyState == 4 && request.status == 200) {
-				cars = JSON.parse(request.responseText);
+	function hello() {
+		xhr.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true);
+
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				cars = JSON.parse(xhr.responseText);
 				console.log(cars);
 			}
 		}
-		request.send(data);
-	}*/
+		xhr.send(data);
+	}
+
+
 	</script>
 </head>
 <body onload="init()">
