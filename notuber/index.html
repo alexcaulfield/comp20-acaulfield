@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>notuber</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+	<link rel="stylesheet" href="style.css" />
+	<script type="text/javascript">
+
+	// USERNAME: JyggLRkg
+	var myLat = 0;
+	var myLng = 0;
+	var request = new XMLHttpRequest();
+	var myLocation = new google.maps.LatLng(myLat, myLng);
+
+	var info = {
+		zoom: 10,
+		center: myLocation,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+
+	var map;
+	var marker;
+	var infowindow = new google.maps.InfoWindow();
+
+	function init() {
+		map = new google.maps.Map(document.getElementById("map_canvas"), info);
+		getLocation();
+	}
+
+	function getLocation() {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				//console.log(position);
+				myLat = position.coords.latitude;
+				myLng = position.coords.longitude;
+				displayMap();
+			});
+		} // else browswer doesn't support
+	}
+
+	function displayMap() {
+		myLocation = new google.maps.LatLng(myLat, myLng);
+
+		map.panTo(myLocation);
+
+		marker = new google.maps.Marker({
+			position: myLocation,
+			title: "Hello Ollie!"
+		});
+
+		marker.setMap(map);
+
+		google.maps.event.addListener(marker, 'click', function() {
+			infowindow.setContent(marker.title);
+			infowindow.open(map, marker);
+		});
+	}
+
+	
+/*	function hello() {
+		var data = {
+			username: "JyggLRkg", 
+			lat:"42.4", 
+			lng: "-71.1"
+		};
+
+		request.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true);
+
+		request.onreadystatechange = function () {
+			if (request.readyState == 4 && request.status == 200) {
+				cars = JSON.parse(request.responseText);
+				console.log(cars);
+			}
+		}
+		request.send(data);
+	}*/
+	</script>
+</head>
+<body onload="init()">
+	<div id="map_canvas"></div>
+</body>
+</html>
