@@ -20,30 +20,27 @@
 	var marker;
 	var infowindow = new google.maps.InfoWindow();
 
-	//var params = "username={username}&lat=YOUR_LATITUDE&lng=YOUR_LONGITUDE";
-
 	var username = 'JyggLRkg';
 	var xhr = new XMLHttpRequest();
 	var data = "";
-	//console.log(data);
 
 	var cars;
 
 	function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), info);
 		getLocation();
-		hello();
+		makeRequest();
 	}
 
 	function getLocation() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-			//	console.log(position);
+
 				myLat = position.coords.latitude;
 				myLng = position.coords.longitude;
 				displayMap();
 			});
-		} // else browswer doesn't support
+		} // TODO: else browswer doesn't support
 	}
 
 	function displayMap() {
@@ -51,9 +48,10 @@
 
 		map.panTo(myLocation);
 
-		marker = new google.maps.Marker({
+		var marker = new google.maps.Marker({
 			position: myLocation,
-			title: "Hello Ollie!"
+			title: "JyggLRkg",
+			icon: 'stick-fig.png'
 		});
 
 		marker.setMap(map);
@@ -67,7 +65,7 @@
 
 	data = "username=" + username + "&lat=" + myLat + "&lng=" + myLng;
 
-	function hello() {
+	function makeRequest() {
 		xhr.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true);
 
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
