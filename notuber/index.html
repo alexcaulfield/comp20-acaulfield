@@ -18,11 +18,14 @@
 	};
 	var map;
 	var marker;
+
 	var infowindow = new google.maps.InfoWindow();
 	var username = 'JyggLRkg';
+	
 	var xhr = new XMLHttpRequest();
 	var data = "";
 	var cars;
+
 	function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), info);
 		getLocation();
@@ -67,7 +70,6 @@
 			if (xhr.readyState == 4 && xhr.status == 200) {
 				cars = JSON.parse(xhr.responseText);
 				findCars(cars);
-				//console.log(cars);
 			}
 		}
 		xhr.send(data);
@@ -86,7 +88,6 @@
 			distMeters = google.maps.geometry.spherical.computeDistanceBetween(carLocation, myLocation);
 
 			distMiles = (distMeters * 0.000621371192);
-			console.log(distMiles);
 
 			var carMarker = new google.maps.Marker({
 				position: carLocation,
@@ -101,10 +102,8 @@
 				infowindow.open(map, this);
 			});
 
-			//console.log(cars.vehicles[i]);
 		}
 
-		//map.panTo(myLocation);
 	}
 
 	</script>
