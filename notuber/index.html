@@ -29,19 +29,22 @@
 	function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), info);
 		getLocation();
-		makeRequest();
+		//makeRequest();
 	}
+
 	function getLocation() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
 				myLat = position.coords.latitude;
 				myLng = position.coords.longitude;
 				displayMap();
+				makeRequest();
 			});
 		} else {
 			alert("Your browser does not support geolocation");
 		}
 	}
+
 	function displayMap() {
 		myLocation = new google.maps.LatLng(myLat, myLng);
 
@@ -60,7 +63,9 @@
 			infowindow.open(map, marker);
 		});
 	}
+
 	data = "username=" + username + "&lat=" + myLat + "&lng=" + myLng;
+
 	function makeRequest() {
 		xhr.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true);
 
@@ -81,13 +86,17 @@
 		for (var i = 0; i < cars.vehicles.length; i++) {
 			carLocation = new google.maps.LatLng(cars.vehicles[i].lat, cars.vehicles[i].lng);
 
+			//console.log(cars.vehicles[i].lat);
+			//console.log(cars.vehicles[i].lng);
+			//console.log(myLocation);
+
 			carUser = cars.vehicles[i].username;
 
 			var distMeters = 0, distMiles = 0;
 
 			distMeters = google.maps.geometry.spherical.computeDistanceBetween(carLocation, myLocation);
 
-			console.log(distMeters);
+			//console.log(distMeters); WHY DOESN'T THIS WORK
 
 			distMiles = (distMeters * 0.000621371192);
 
