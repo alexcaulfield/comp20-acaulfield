@@ -9,40 +9,34 @@
 	var myLat = 0;
 	var myLng = 0;
 	var myLocation = new google.maps.LatLng(myLat, myLng);
-
 	var info = {
 		zoom: 10,
 		center: myLocation,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
-
 	var map;
 	var marker;
 	var infowindow = new google.maps.InfoWindow();
-
 	var username = 'JyggLRkg';
 	var xhr = new XMLHttpRequest();
 	var data = "";
-
 	var cars;
-
 	function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), info);
 		getLocation();
 		makeRequest();
 	}
-
 	function getLocation() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-
 				myLat = position.coords.latitude;
 				myLng = position.coords.longitude;
 				displayMap();
 			});
-		} // TODO: else browswer doesn't support
+		} else {
+			alert("Your browser does not support geolocation");
+		}
 	}
-
 	function displayMap() {
 		myLocation = new google.maps.LatLng(myLat, myLng);
 
@@ -50,7 +44,7 @@
 
 		var marker = new google.maps.Marker({
 			position: myLocation,
-			title: "JyggLRkg",
+			title: username,
 			icon: 'stick-fig.png'
 		});
 
@@ -61,10 +55,7 @@
 			infowindow.open(map, marker);
 		});
 	}
-
-
 	data = "username=" + username + "&lat=" + myLat + "&lng=" + myLng;
-
 	function makeRequest() {
 		xhr.open("POST", "https://defense-in-derpth.herokuapp.com/submit", true);
 
@@ -73,12 +64,39 @@
 		xhr.onreadystatechange = function () {
 			if (xhr.readyState == 4 && xhr.status == 200) {
 				cars = JSON.parse(xhr.responseText);
-				console.log(cars);
+				findCars(cars);
+				//console.log(cars);
 			}
 		}
 		xhr.send(data);
 	}
 
+	var carLocation, carUser;
+
+	function findCars(cars) {
+		for (var i = 0; i < cars.vehicles.length; i++) {
+			carLocation = new google.maps.LatLng(cars.vehicles[i].lat, cars.vehicles[i].lng);
+
+			carUser = cars.vehicles[i].username;
+
+			var carMarker = new google.maps.Marker({
+				position: carLocation,
+				title: carUser,
+				icon: 'black-car.png'
+			});
+
+			carMarker.setMap(map);
+
+			google.maps.event.addListener(carMarker, 'click', function() {
+				infowindow.setContent(this.title);
+				infowindow.open(map, this);
+			});
+
+			//console.log(cars.vehicles[i]);
+		}
+
+		//map.panTo(myLocation);
+	}
 
 	</script>
 </head>
