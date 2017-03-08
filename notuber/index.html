@@ -21,7 +21,7 @@
 
 	var infowindow = new google.maps.InfoWindow();
 	var username = 'JyggLRkg';
-	
+
 	var xhr = new XMLHttpRequest();
 	var data = "";
 	var cars;
@@ -49,7 +49,7 @@
 
 		var marker = new google.maps.Marker({
 			position: myLocation,
-			title: username,
+			title: "<h3>" + username + "</h3>",
 			icon: 'stick-fig.png'
 		});
 
@@ -87,11 +87,13 @@
 
 			distMeters = google.maps.geometry.spherical.computeDistanceBetween(carLocation, myLocation);
 
+			console.log(distMeters);
+
 			distMiles = (distMeters * 0.000621371192);
 
 			var carMarker = new google.maps.Marker({
 				position: carLocation,
-				title: carUser + " " + distMiles,
+				title: "<h3>" + carUser + "</h3>" + "<p>is " + distMiles + " mile(s) away</p>",
 				icon: 'black-car.png'
 			});
 
