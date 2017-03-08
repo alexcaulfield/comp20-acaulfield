@@ -3,7 +3,9 @@
 <head>
 	<title>notuber</title>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+	<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script> -->
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
+
 	<link rel="stylesheet" href="style.css" />
 	<script type="text/javascript">
 	var myLat = 0;
@@ -79,9 +81,16 @@
 
 			carUser = cars.vehicles[i].username;
 
+			var distMeters = 0, distMiles = 0;
+
+			distMeters = google.maps.geometry.spherical.computeDistanceBetween(carLocation, myLocation);
+
+			distMiles = (distMeters * 0.000621371192);
+			console.log(distMiles);
+
 			var carMarker = new google.maps.Marker({
 				position: carLocation,
-				title: carUser,
+				title: carUser + " " + distMiles,
 				icon: 'black-car.png'
 			});
 
