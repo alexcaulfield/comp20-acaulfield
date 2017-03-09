@@ -24,12 +24,11 @@
 
 	var xhr = new XMLHttpRequest();
 	var data = "";
-	var cars;
+	var items; // items to be placed on the map
 
 	function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), info);
 		getLocation();
-		//makeRequest();
 	}
 
 	function getLocation() {
@@ -73,8 +72,8 @@
 
 		xhr.onreadystatechange = function () {
 			if (xhr.readyState == 4 && xhr.status == 200) {
-				cars = JSON.parse(xhr.responseText);
-				findCars(cars);
+				items = JSON.parse(xhr.responseText);
+				findCars(items);
 			}
 		}
 		xhr.send(data);
@@ -82,39 +81,59 @@
 
 	var carLocation, carUser;
 
-	function findCars(cars) {
-		for (var i = 0; i < cars.vehicles.length; i++) {
-			carLocation = new google.maps.LatLng(cars.vehicles[i].lat, cars.vehicles[i].lng);
+	function findCars(items) {
+		if (typeof items.vehicles !== 'undefined') { // user is passenger, display vehicles
+			for (var i = 0; i < items.vehicles.length; i++) {
+				carLocation = new google.maps.LatLng(items.vehicles[i].lat, items.vehicles[i].lng);
 
-			//console.log(cars.vehicles[i].lat);
-			//console.log(cars.vehicles[i].lng);
-			//console.log(myLocation);
+				carUser = items.vehicles[i].username;
 
-			carUser = cars.vehicles[i].username;
+				var distMeters = 0, distMiles = 0;
 
-			var distMeters = 0, distMiles = 0;
+				distMeters = google.maps.geometry.spherical.computeDistanceBetween(carLocation, myLocation);
 
-			distMeters = google.maps.geometry.spherical.computeDistanceBetween(carLocation, myLocation);
+				distMiles = (distMeters * 0.000621371192);
 
-			//console.log(distMeters); WHY DOESN'T THIS WORK
+				var carMarker = new google.maps.Marker({
+					position: carLocation,
+					title: "<h3>" + carUser + "</h3>" + "<p>is " + distMiles + " mile(s) away</p>",
+					icon: 'black-car.png'
+				});
 
-			distMiles = (distMeters * 0.000621371192);
+				carMarker.setMap(map);
 
-			var carMarker = new google.maps.Marker({
-				position: carLocation,
-				title: "<h3>" + carUser + "</h3>" + "<p>is " + distMiles + " mile(s) away</p>",
-				icon: 'black-car.png'
-			});
+				google.maps.event.addListener(carMarker, 'click', function() {
+					infowindow.setContent(this.title);
+					infowindow.open(map, this);
+				});
 
-			carMarker.setMap(map);
+			}
+		} else { // user is driver, display passengers
+			for (var i = 0; i < items.passengers.length; i++) {
+				carLocation = new google.maps.LatLng(items.passengers[i].lat, items.passengers[i].lng);
 
-			google.maps.event.addListener(carMarker, 'click', function() {
-				infowindow.setContent(this.title);
-				infowindow.open(map, this);
-			});
+				carUser = items.passengers[i].username;
 
+				var distMeters = 0, distMiles = 0;
+
+				distMeters = google.maps.geometry.spherical.computeDistanceBetween(carLocation, myLocation);
+
+				distMiles = (distMeters * 0.000621371192);
+
+				var carMarker = new google.maps.Marker({
+					position: carLocation,
+					title: "<h3>" + carUser + "</h3>" + "<p>is " + distMiles + " mile(s) away</p>",
+					icon: 'passenger.png'
+				});
+
+				carMarker.setMap(map);
+
+				google.maps.event.addListener(carMarker, 'click', function() {
+					infowindow.setContent(this.title);
+					infowindow.open(map, this);
+				});
+			}
 		}
-
 	}
 
 	</script>
