@@ -1,7 +1,7 @@
 # Alex Caulfield - comp20 assignment 4
 
-###Implementation
+### Implementation
 
-###Collaboration
+### Collaboration
 
-###Time Spent
+### Time Spent
