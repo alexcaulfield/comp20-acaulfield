@@ -4,27 +4,44 @@
 	<title>Security and Privacy Assessment</title>
 </head>
 <body>
-<h1>Security and Privacy Assessment of Client-Side and Server-Side of Nikita Rao</h1>
+<h1>Security and Privacy Assessment of Client-Side and Server-Side of Ming Chow</h1>
+<h4>Alex Caulfield, comp20, Spring 2017</h4>
+
+<!-- location based privacy -->
 
 <h2>Introduction</h2>
 
-<p> 
+<p>The product that I am assessing is a uber-type implementation of assignment 3 of comp20 at Tufts University. Specifically, the assignment covers the backend of a vehicle search application. The client side can request where vehicles are, and save in the database where vehicles and passengers are through a POST api. The security and privacy of the application found <a href="https://defense-in-derpth.herokuapp.com/">here</a> will be assessed. The application has been determined to be potentially vulnerable, and any issues will be documented and analyzed, along with suggestions to solve these issues.
 </p>
 
 <h2>Methodology</h2>
 
-<p> 
-</p>
+<p>Testing began with using curl to send requests to the server. Specifically, I looked at the
+POST API and tried to inject different html and javascript as the username. The curl XSS injection attempts consistently returned an error from the application, where the injection of code as the username to be saved in the database did not work. This makes sense, as when looking at the code of the website, it checked for whether or not the username is a valid vehicle username. Since none of the XSS attempts of code were a vehicle username, it rejected the input and did not place that data in the database. Next, the get html route was examined by visiting the webpage, and curl requests were made to the vehicle.json to make sure that the data displayed from the database was correct. Finally, the source code for the javascript server file was examined for other vulnerabilities from flaws in the code.</p>
 
 <h2>Abstract of Findings</h2>
 
-<p> 
+<p>There are some flaws in the source code that could result security problems for the application. Though the application does a careful job of making sure user input is valid for adding values to the database, but there is no check when getting data back from the database for whether the data in the request is valid. This leaves the program running under the assumption that the user will only give valid information to the application. Finally, the settings of the application allow anyone to be able to access the database, which can be potentially dangerous based on what they decide to send the database.
 </p>
 
 <h2>Issues Found</h2>
 
-<p> 
-</p>
+<!-- look for bad programming practice - i.e. enforce defensive coding/checking user input to make sure it's not null or undefined, or check that it is in the database to confirm that it is not anything like XSS -->
+
+<h3>CORS is always enabled</h3>
+<ul>
+	<li></li>
+</ul>
+
+<h3>Checking user input for valid username (in GET routes)</h3>
+<ul>
+	<li></li>
+</ul>
+
+<h3>Find one more</h3>
+<ul>
+	<li></li>
+</ul>
 
 <h2>Conclusion</h2>
 
