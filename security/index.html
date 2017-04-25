@@ -34,11 +34,16 @@ POST API and tried to inject different html and javascript as the username. Next
 	<li>Location: Inject content in the POST API, and the content is displayed in the GET '/' API</li>
 	<li>Severity: High
 		<ul>
-			<li>This allows any user to inject any html or javascript content into the database. This could include any malicious content, and would thus be displayed on the homepage of the website. This malicious content could grab other users information, crash their computer, or just result in the website being completely unreliable as the data displayed in the GET '/' API is so easily manipulated.</li>
+			<li>This allows any user to inject any html or javascript content into the database. This could include any malicious content, and would thus be displayed on the homepage of the website, or cause the website to be redirected when accessing the homepage of the site on a browser. This malicious content could grab other users information, crash their computer, or just result in the website being completely unreliable as the data or information displayed in the GET '/' API is so easily manipulated or redirected.</li>
 			<!-- could also prevent this by checking usernames in the GET '/' route --> 
 		</ul>
 	</li>
-	<li>Proof: <!-- add pix --> </li>
+	<li>Proof: Shown with curl command in terminal and the result is displayed in the GET '/' API 
+		<ul>
+			<li><img src="xss-curl.png" alt="XSS curl command" width="1000px"/></li>
+			<li><img src="xss-loaded.png" alt="XSS shown on site" width="1000px"/></li>		
+		</ul>
+	</li>
 	<li>Resolution: This can be solved by checking if the username input is part of the list of passengers, which would result in valid data being entered into the database. Another solution is to parse the user input by removing any < or > symbols, and other characters that could result in the parsing of javascript or HTML code. </li>
 </ul>
 
@@ -51,7 +56,11 @@ POST API and tried to inject different html and javascript as the username. Next
 			<li>The '*' in the response header allows CORS, which effectively allows any origin to access the API. Anyone can send an XHR POST request to the site and receive a response from the server. Thus, anyone can manipulate what is in the database, and therefore what is displayed on the webpage</li>
 		</ul>
 	</li>
-	<li>Proof:</li>
+	<li>Proof:
+		<ul>
+			<li><img src="CORS.png" alt="CORS is on" width="1000px"/></li>	
+		</ul>
+	</li>
 	<li>Resolution: Only enable CORS for certain users to be able to use the application, and thus hackers and random users will not be able to access the database</li>
 
 </ul>
@@ -65,8 +74,12 @@ POST API and tried to inject different html and javascript as the username. Next
 			<li>Since there is no check of the user input, then potentially harmful or useless data can be sent to the database to query it for information. On top of this, the database then returns potentially private information, which would then be displayed no matter whether the user knew a real username. Thus, people could get private information without knowing anything about the application or knowing any real usernames.</li>
 		</ul>
 	</li>
-	<li>Proof:</li>
-	<li>Resolution: Have a check for if the username is in the database before running the code to get something from the database. This will prevent any malicious or unnecessary usernames from being sent to the server to then query the database. Thus, responses will only come when the user inputs a valid username</li>
+	<li>Proof: Queries the database without checking if the username is a valid type (other than not undefined/null)
+		<ul>
+			<li><img src="database-request.png" alt="Querying database" width="1000px"/></li>	
+		</ul>
+	</li>
+	<li>Resolution: Have a check for if the username is in the database before running the code to get something from the database. This will prevent any malicious or unnecessary usernames from being sent to the server to then query the database. Thus, queries will only happen when the user inputs a valid username, and then a response will be returned</li>
 </ul>
 
 <h2>Conclusion</h2>
