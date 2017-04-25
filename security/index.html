@@ -4,7 +4,7 @@
 	<title>Security and Privacy Assessment</title>
 </head>
 <body>
-<h1>Security and Privacy Assessment of Client-Side and Server-Side of Ming Chow</h1>
+<h1>Security and Privacy Assessment of Client-Side and Server-Side/h1>
 <h4>Alex Caulfield, comp20, Spring 2017</h4>
 
 <!-- location based privacy -->
@@ -17,30 +17,56 @@
 <h2>Methodology</h2>
 
 <p>Testing began with using curl to send requests to the server. Specifically, I looked at the
-POST API and tried to inject different html and javascript as the username. The curl XSS injection attempts consistently returned an error from the application, where the injection of code as the username to be saved in the database did not work. This makes sense, as when looking at the code of the website, it checked for whether or not the username is a valid vehicle username. Since none of the XSS attempts of code were a vehicle username, it rejected the input and did not place that data in the database. Next, the get html route was examined by visiting the webpage, and curl requests were made to the vehicle.json to make sure that the data displayed from the database was correct. Finally, the source code for the javascript server file was examined for other vulnerabilities from flaws in the code.</p>
+POST API and tried to inject different html and javascript as the username. Next, the get html route was examined by visiting the webpage, and curl requests were made to the vehicle.json to make sure that the data displayed from the database was correct. Finally, the source code for the javascript server file was examined for other vulnerabilities from flaws in the code.</p>
 
 <h2>Abstract of Findings</h2>
 
-<p>There are some flaws in the source code that could result security problems for the application. Though the application does a careful job of making sure user input is valid for adding values to the database, but there is no check when getting data back from the database for whether the data in the request is valid. This leaves the program running under the assumption that the user will only give valid information to the application. Finally, the settings of the application allow anyone to be able to access the database, which can be potentially dangerous based on what they decide to send the database.
+<p>There are some flaws in the source code that could result security problems for the application. The application does not check for a valid username to place into the database (specifically if it is a passenger when using the POST API), and there is no check when getting data back from the database for whether the data in the request is valid. This leaves the program running under the assumption that the user will only give valid information to the application. Finally, the settings of the application allow anyone to be able to access the database, which can be potentially dangerous based on what they decide to send the database.
 </p>
 
 <h2>Issues Found</h2>
 
 <!-- look for bad programming practice - i.e. enforce defensive coding/checking user input to make sure it's not null or undefined, or check that it is in the database to confirm that it is not anything like XSS -->
 
+<h3>XSS with content injection</h3>
+<ul>
+	<li>Issue: Can inject javascript or HTML content into the database, thus outputting it onto the home html page of <a href="https://defense-in-derpth.herokuapp.com/">the site</a></li>
+	<li>Location: Inject content in the POST API, and the content is displayed in the GET '/' API</li>
+	<li>Severity: High
+		<ul>
+			<li>This allows any user to inject any html or javascript content into the database. This could include any malicious content, and would thus be displayed on the homepage of the website. This malicious content could grab other users information, crash their computer, or just result in the website being completely unreliable as the data displayed in the GET '/' API is so easily manipulated.</li>
+			<!-- could also prevent this by checking usernames in the GET '/' route --> 
+		</ul>
+	</li>
+	<li>Proof: <!-- add pix --> </li>
+	<li>Resolution: This can be solved by checking if the username input is part of the list of passengers, which would result in valid data being entered into the database. Another solution is to parse the user input by removing any < or > symbols, and other characters that could result in the parsing of javascript or HTML code. </li>
+</ul>
+
 <h3>CORS is always enabled</h3>
 <ul>
-	<li></li>
+	<li>Issue: Anyone can access the APIs available at defense-in-derpth.herokuapp.com</li>
+	<li>Location: POST API</li>
+	<li>Severity: Medium
+		<ul>
+			<li>The '*' in the response header allows CORS, which effectively allows any origin to access the API. Anyone can send an XHR POST request to the site and receive a response from the server. Thus, anyone can manipulate what is in the database, and therefore what is displayed on the webpage</li>
+		</ul>
+	</li>
+	<li>Proof:</li>
+	<li>Resolution: Only enable CORS for certain users to be able to use the application, and thus hackers and random users will not be able to access the database</li>
+
 </ul>
 
-<h3>Checking user input for valid username (in GET routes)</h3>
+<h3>Checking user input for valid username</h3>
 <ul>
-	<li></li>
-</ul>
-
-<h3>Find one more</h3>
-<ul>
-	<li></li>
+	<li>Issue: Any username submitted by the user will then be used to query the database</li>
+	<li>Location: GET '/vehicle.json' API</li>
+	<li>Severity: Medium
+		<ul>
+			<li>Since there is no check of the user input, then potentially harmful or useless data can be sent to the database to query it for information. On top of this, the database then returns potentially private information, which would then be displayed no matter whether the user knew a real username. Thus, people could get private information without knowing anything about the application or knowing any real usernames.</li>
+		</ul>
+	</li>
+	<li>Proof:</li>
+	<li>Resolution: Have a check for if the username is in the database before running the code to get something from the database. This will prevent any malicious or unnecessary usernames from being sent to the server to then query the database. Thus, responses will only come when the user inputs a valid username</li>
 </ul>
 
 <h2>Conclusion</h2>
