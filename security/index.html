@@ -4,7 +4,7 @@
 	<title>Security and Privacy Assessment</title>
 </head>
 <body>
-<h1>Security and Privacy Assessment of Client-Side and Server-Side/h1>
+<h1>Security and Privacy Assessment of Client-Side and Server-Side</h1>
 <h4>Alex Caulfield, comp20, Spring 2017</h4>
 
 <!-- location based privacy -->
@@ -84,13 +84,14 @@ POST API and tried to inject different html and javascript as the username. Next
 
 <h2>Conclusion</h2>
 
-<p> 
+<p>The problems with this application leads me to believe that the issues need to be fixed before the app is publically released. However, these 3 problems do not have signficicant costs, likely resulting in 3-4 hours more of work of cleaning up the user input to the system and developing defensive coding, and debugging this code. This defensive coding will lead to the application being more secure, as it will not trust the user's input and also prevent from any random user or hacker from accessing or augmenting the private information in the database. The beginning of this has already been done, with making sure that the latitude and longitude are valid values. With the addition of parsing user input to prevent XSS, eliminating CORS being enabled for all users, and making sure the database will be only queried with real usernames. With these solutions, the application will be more secure and be safe to distribute publically, with correct information being displayed on the site and held in the database. 
 </p>
 
 <h2>References</h2>
 
 <ul>
-	<li></li>
+	<li><a href="https://stackoverflow.com/questions/12001269/what-are-the-security-risks-of-setting-access-control-allow-origin">CORS risks</a></li>
+	<li><a href="https://tuftsdev.github.io/WebProgramming/notes/web_security.html">Class notes on web security</a></li>
 </ul>
 
 </body>
