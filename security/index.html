@@ -11,31 +11,28 @@
 
 <h2>Introduction</h2>
 
-<p>The product that I am assessing is a uber-type implementation of assignment 3 of comp20 at Tufts University. Specifically, the assignment covers the backend of a vehicle search application. The client side can request where vehicles are, and save in the database where vehicles and passengers are through a POST api. The security and privacy of the application found <a href="https://defense-in-derpth.herokuapp.com/">here</a> will be assessed. The application has been determined to be potentially vulnerable, and any issues will be documented and analyzed, along with suggestions to solve these issues.
+<p>The product that I am assessing is a uber-type implementation of assignment 3 of comp20 at Tufts University. Specifically, the assignment covers the backend of a vehicle search application. The client side can request where vehicles are, and save in the database where vehicles and passengers are through a POST API. The security and privacy of the application found <a href="https://defense-in-derpth.herokuapp.com/">here</a> will be assessed. The application has been determined to be potentially vulnerable, and any issues will be documented and analyzed, along with suggestions to solve these issues.
 </p>
 
 <h2>Methodology</h2>
 
 <p>Testing began with using curl to send requests to the server. Specifically, I looked at the
-POST API and tried to inject different html and javascript as the username. Next, the get html route was examined by visiting the webpage, and curl requests were made to the vehicle.json to make sure that the data displayed from the database was correct. Finally, the source code for the javascript server file was examined for other vulnerabilities from flaws in the code.</p>
+POST API and tried to inject javascript as the username. Next, the GET '/' route was examined by visiting the webpage and seeing what was displayed, and curl requests were made to the vehicle.json to make sure that the data displayed from the database was correct. Finally, the source code for the javascript server file was examined for other vulnerabilities from flaws in the code.</p>
 
 <h2>Abstract of Findings</h2>
 
-<p>There are some flaws in the source code that could result security problems for the application. The application does not check for a valid username to place into the database (specifically if it is a passenger when using the POST API), and there is no check when getting data back from the database for whether the data in the request is valid. This leaves the program running under the assumption that the user will only give valid information to the application. Finally, the settings of the application allow anyone to be able to access the database, which can be potentially dangerous based on what they decide to send the database.
+<p>There are some flaws in the source code that could result security problems for the application. The application does not check for a valid username to place into the database (specifically if it is a passenger when using the POST API), and there is no check when getting data back from the database for whether the data (specifically the username) in the request is valid. This leaves the program running under the assumption that the user will only give valid information to the application. Finally, the settings of the application allow anyone to be able to access the database, which can be potentially dangerous based on what they decide to send the database.
 </p>
 
 <h2>Issues Found</h2>
 
-<!-- look for bad programming practice - i.e. enforce defensive coding/checking user input to make sure it's not null or undefined, or check that it is in the database to confirm that it is not anything like XSS -->
-
 <h3>XSS with content injection</h3>
 <ul>
-	<li>Issue: Can inject javascript or HTML content into the database, thus outputting it onto the home html page of <a href="https://defense-in-derpth.herokuapp.com/">the site</a></li>
+	<li>Issue: Can inject javascript or HTML content into the database, thus outputting it onto the html page of <a href="https://defense-in-derpth.herokuapp.com/">GET '/' route</a></li>
 	<li>Location: Inject content in the POST API, and the content is displayed in the GET '/' API</li>
 	<li>Severity: High
 		<ul>
-			<li>This allows any user to inject any html or javascript content into the database. This could include any malicious content, and would thus be displayed on the homepage of the website, or cause the website to be redirected when accessing the homepage of the site on a browser. This malicious content could grab other users information, crash their computer, or just result in the website being completely unreliable as the data or information displayed in the GET '/' API is so easily manipulated or redirected.</li>
-			<!-- could also prevent this by checking usernames in the GET '/' route --> 
+			<li>This allows any user to inject any html or javascript content into the database. This could include malicious or unrelated content, and would thus be displayed on the homepage of the website, or cause the website to be redirected when accessing the homepage of the site on a browser. This malicious content could grab other users information, crash their computer, or just result in the website being completely unreliable as the data or information displayed in the GET '/' API is so easily manipulated or redirected.</li>
 		</ul>
 	</li>
 	<li>Proof: Shown with curl command in terminal and the result is displayed in the GET '/' API 
@@ -45,24 +42,6 @@ POST API and tried to inject different html and javascript as the username. Next
 		</ul>
 	</li>
 	<li>Resolution: This can be solved by checking if the username input is part of the list of passengers, which would result in valid data being entered into the database. Another solution is to parse the user input by removing any < or > symbols, and other characters that could result in the parsing of javascript or HTML code. </li>
-</ul>
-
-<h3>CORS is always enabled</h3>
-<ul>
-	<li>Issue: Anyone can access the APIs available at defense-in-derpth.herokuapp.com</li>
-	<li>Location: POST API</li>
-	<li>Severity: Medium
-		<ul>
-			<li>The '*' in the response header allows CORS, which effectively allows any origin to access the API. Anyone can send an XHR POST request to the site and receive a response from the server. Thus, anyone can manipulate what is in the database, and therefore what is displayed on the webpage</li>
-		</ul>
-	</li>
-	<li>Proof:
-		<ul>
-			<li><img src="CORS.png" alt="CORS is on" width="1000px"/></li>	
-		</ul>
-	</li>
-	<li>Resolution: Only enable CORS for certain users to be able to use the application, and thus hackers and random users will not be able to access the database</li>
-
 </ul>
 
 <h3>Checking user input for valid username</h3>
@@ -82,9 +61,28 @@ POST API and tried to inject different html and javascript as the username. Next
 	<li>Resolution: Have a check for if the username is in the database before running the code to get something from the database. This will prevent any malicious or unnecessary usernames from being sent to the server to then query the database. Thus, queries will only happen when the user inputs a valid username, and then a response will be returned</li>
 </ul>
 
+<h3>CORS is enabled for all users</h3>
+<ul>
+	<li>Issue: Anyone can access the APIs available at defense-in-derpth.herokuapp.com</li>
+	<li>Location: POST API</li>
+	<li>Severity: Medium
+		<ul>
+			<li>The '*' in the response header allows CORS, which effectively allows any origin to access the API. Anyone can send an XHR POST request to the site and receive a response from the server. Thus, anyone can manipulate what is in the database, and therefore what is displayed on the html page of the GET '/' API</li>
+			<li>The severity of this problem only rises to high when a lot of users are aware of the website, and therefore there is a higher chance of someone maliciously attacking and taking advantage of the enabled CORS</li>
+		</ul>
+	</li>
+	<li>Proof:
+		<ul>
+			<li><img src="CORS.png" alt="CORS is on" width="1000px"/></li>	
+		</ul>
+	</li>
+	<li>Resolution: Only enable CORS for certain users to be able to use the application, and thus hackers and random users will not be able to access the database</li>
+
+</ul>
+
 <h2>Conclusion</h2>
 
-<p>The problems with this application leads me to believe that the issues need to be fixed before the app is publically released. However, these 3 problems do not have signficicant costs, likely resulting in 3-4 hours more of work of cleaning up the user input to the system and developing defensive coding, and debugging this code. This defensive coding will lead to the application being more secure, as it will not trust the user's input and also prevent from any random user or hacker from accessing or augmenting the private information in the database. The beginning of this has already been done, with making sure that the latitude and longitude are valid values. With the addition of parsing user input to prevent XSS, eliminating CORS being enabled for all users, and making sure the database will be only queried with real usernames. With these solutions, the application will be more secure and be safe to distribute publically, with correct information being displayed on the site and held in the database. 
+<p>The problems with this application leads me to believe that the issues need to be fixed before the app is publically released. However, these 3 problems do not have signficicant costs, likely resulting in 3-4 hours more of work of cleaning up the user input to the system and developing defensive coding, and debugging this code. This defensive coding will lead to the application being more secure, as it will not trust the user's input and also prevent from any random user or hacker from accessing or augmenting the private information in the database. The beginning of this has already been done, with making sure that the latitude and longitude are valid values. The security and privacy of the application will increase with the addition of parsing user input to prevent XSS, eliminating CORS being enabled for all users, and making sure the database will be only queried with real usernames. With these solutions, the application will be more secure and be safe to distribute publically, with correct information being displayed on the homepage of the website and held in the database. 
 </p>
 
 <h2>References</h2>
